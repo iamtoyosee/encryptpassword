@@ -1,30 +1,59 @@
-from exceptions import PasswordNotLongEnough
+from rich.console import Console
+from rich.table import Table
+
+
+console = Console()
 
 passwords = {}
 def printMenu():
-  print("1. Add a new password")
-  print("2. View a password")
-  print("3. Delete a password")
-  print("4. Exit \n")
+  print("[1] Add a new password")
+  print("[2] View all passwords")
+  print("[3] View a password")
+  print("[4] Delete a password")
+  print("[5] Exit")
   
 def addPassword():
   name = str(input("Enter account name: "))
   password = str(input("Enter account password: "))
   with open("passwords.txt","a") as f:
-    f.write(f"{name}:{password}")
-
-  
-  
+    f.write(f"{name}:{password}\n")
   print("")
-  print(f"{name}:{password}")
-  print("Password added successfully")
+  
+  
+  # Create a table with two columns: Account Name and Password
+  table = Table(title="Account Information")
+
+  # Add the columns
+  table.add_column("Account Name", justify="left", style="cyan", no_wrap=True)
+  table.add_column("Password", justify="left", style="magenta")
+
+  # Add rows with account name and password pairs
+  table.add_row(f"{name}", f"{password}")
+
+
+  # Print the table to the console
+  console.print(table)
+  console.print("\nPassword added successfully",style="green")
   
 def viewPassword():
-  name = str(input("Enter account name: "))
   try:
     with open("passwords.txt", "r") as f:
-      for line in f:
-        [name, password] = line.strip().split(":")
+      
+# Create a table with two columns: Account Name and Password
+        table = Table(title="Account Information")
+
+        # Add the columns
+        table.add_column("Account Name", justify="left", style="cyan", no_wrap=True)
+        table.add_column("Password", justify="left", style="magenta")
+        for line in f:
+          account, password = line.strip().split(":")
+          # Add rows with account name and password pairs
+          table.add_row(f"{account}", f"{password}")
+
+
+        # Print the table to the console
+        console.print(table)
+        console.print("\nPassword added successfully",style="green")
   except FileNotFoundError:
     print("Password file does not exist")
     
@@ -52,10 +81,12 @@ def deletePassword():
 
 
 def main():
-  print("Welcome to your favorite password manager! \n")
-  print("What would you like to do?")
+  console.print("\nWelcome to your favorite password manager! \n", style="bold green")
+  print("What would you like to do?\n")
+  console.print("-----------------------------------", style="green")
   printMenu()
-  choice = int(input("Enter Choice: "))
+  console.print("-----------------------------------", style="green")
+  choice = int(input("\nEnter Choice: "))
   print("")
 
   if choice == 1:
